@@ -5,12 +5,12 @@ import User from '../models/User.js';
 export const inngest = new Inngest({id: "talent-iq"});
 
 const deleteUserFromDB = inngest.createFunction(
-    {id: "delete-user-form-db"},
+    {id: "delete-user-from-db"},
     {event: "clerk/user.deleted"},
     async ({event}) => {
         await connectDB()
 
-        const {id } = event.data
+        const { id } = event.data
         await User.deleteOne({ clerkId: id});
 
         
