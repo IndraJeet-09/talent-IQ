@@ -8,8 +8,8 @@ console.log("ENV loaded:", ENV); // 🔍 debug log
 const app = express();
 
 // ✅ Proper __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.resolve();
 
 // Health check
 app.get("/health", (req, res) => {
@@ -18,7 +18,7 @@ app.get("/health", (req, res) => {
 
 // Serve frontend in production
 if (ENV.NODE_ENV === "production") {
-  const frontendPath = path.join(__dirname, "../../frontend/dist");
+  const frontendPath = path.join(__dirname, "../frontend/dist");
 
 //   console.log("Serving frontend from:", frontendPath);
 
