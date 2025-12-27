@@ -7,7 +7,7 @@ export const inngest = new Inngest({id: "talent-iq"});
 const deleteUserFromDB = inngest.createFunction(
     {id: "delete-user-form-db"},
     {event: "clerk/user.deleted"},
-    async (event) => {
+    async ({event}) => {
         await connectDB()
 
         const {id } = event.data
