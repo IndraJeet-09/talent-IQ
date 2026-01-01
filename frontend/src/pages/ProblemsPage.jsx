@@ -5,7 +5,7 @@ import { ChevronRightIcon, Code2Icon } from "lucide-react"
 import { getDifficultyBadgeClass } from "../lib/utils.js"
 
 
-function ProblemPages() {
+function ProblemsPage() {
 
   const problems = Object.values(PROBLEMS)
   const easyProblemsCount = problems.filter(p => p.difficulty === "Easy").length
@@ -27,7 +27,7 @@ function ProblemPages() {
         <div className="space-y-4">
           {problems.map(problem => (
             <Link key={problem.id}
-              to={`/problems/${problem.id}`}
+              to={`/problem/${problem.id}`}
               className="card bg-base-100 hover:scale-[1.01] transition-transform"
             >
               <div className="card-body">
@@ -97,4 +97,4 @@ function ProblemPages() {
   )
 }
 
-export default ProblemPages
+export default ProblemsPage
