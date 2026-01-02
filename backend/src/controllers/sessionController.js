@@ -5,7 +5,7 @@ export async function createSession(req, res) {
   try {
     const { problem, difficulty } = req.body;
     const userId = req.user._id;
-    const clerId = req.user.clerId;
+    const clerkId = req.user.clerkId;
 
     if (!problem || !difficulty) {
       return res
@@ -27,16 +27,16 @@ export async function createSession(req, res) {
     // create stream video call
     await streamClient.video.call("default", callId).getOrCreate({
         data:{
-            created_by_id:clerId,
-            custom: {problem, difficulty, sessionId: session._id.toString}
+            created_by_id:clerkId,
+            custom: {problem, difficulty, sessionId: session._id.toString()}
         }
     })
 
     // chat messaging
     const channel = chatClient.channel("messaging", callId, {
         name:`${problem} Session`,
-        created_by_id:clerId,
-        members:[clerId]
+        created_by_id:clerkId,
+        members:[clerkId]
     })
 
     await channel.create()
@@ -50,7 +50,8 @@ export async function createSession(req, res) {
 export async function getActiveSessions(_, res) {
     try {
         const sessions = await Session.find({status: "active"})
-        .populate("host","name profileImage emil clerkId")
+        .populate("host","name profileImage email clerkId")
+        .populate("participant","name profileImage email clerkId")
         .sort({createdAt:-1})
         .limit(20);
 
