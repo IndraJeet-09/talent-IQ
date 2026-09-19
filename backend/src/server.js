@@ -16,7 +16,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use(clerkMiddleware());
+app.use(clerkMiddleware({ signInUrl: false }));
 // credentials: true meaning? => server allows browser to include cookies on request
 app.use(cors({origin:ENV.CLIENT_URL, credentials: true }));
 
