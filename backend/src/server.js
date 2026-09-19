@@ -12,7 +12,7 @@ console.log("ENV loaded:", ENV); // 🔍 debug log
 
 const app = express();
 
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 
 app.use(express.json());
 
