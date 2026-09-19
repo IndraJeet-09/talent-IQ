@@ -1,5 +1,4 @@
 import express from "express";
-import path from "path";
 import cors from 'cors'
 import { ENV } from "./lib/env.js";
 import { connectDB } from "./lib/db.js";
@@ -32,16 +31,7 @@ app.get("/health", (req, res) => {
 
 
 
-// Serve frontend in production
-if (ENV.NODE_ENV === "production") {
-  const frontendPath = path.join(__dirname, "../frontend/dist");
 
-  app.use(express.static(frontendPath));
-
-  app.use((req, res) => {
-    res.sendFile(path.join(frontendPath, "index.html"));
-  });
-}
 
 const PORT = ENV.PORT || 3000;
 
