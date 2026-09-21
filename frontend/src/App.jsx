@@ -1,6 +1,8 @@
 
-import { useUser } from '@clerk/clerk-react'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import { Navigate, Route, Routes } from 'react-router'
+import { useEffect } from 'react'
+import { setTokenGetter } from './lib/axios'
 import HomePage from './pages/HomePage'
 import {Toaster} from 'react-hot-toast';
 import DashboardPage from './pages/DashboardPage';
@@ -10,6 +12,11 @@ import SessionPage from './pages/SessionPage';
 
 function App() {
   const {isSignedIn, isLoaded} =  useUser();
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    setTokenGetter(getToken);
+  }, [getToken]);
 
   if(!isLoaded) return null;
   return (
