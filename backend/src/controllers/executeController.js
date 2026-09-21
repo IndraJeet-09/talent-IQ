@@ -11,7 +11,7 @@ export const executeCode = async (req, res) => {
     }
 
     if (!SUPPORTED_LANGUAGES.includes(language)) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         error: `Language "${language}" is not supported. Only JavaScript is currently available.`,
       });
