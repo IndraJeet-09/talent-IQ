@@ -7,6 +7,7 @@ import {inngest ,functions} from './lib/inngest.js'
 import { clerkMiddleware } from '@clerk/express';
 import chatRoutes from './routes/chatRoutes.js'
 import sessionRoutes from './routes/sessionRoutes.js'
+import executeRoutes from './routes/executeRoutes.js'
 
 console.log("ENV loaded:", ENV); // 🔍 debug log
 
@@ -23,6 +24,7 @@ app.use(cors({origin:ENV.CLIENT_URL, credentials: true }));
 app.use("/api/inngest", serve({client: inngest ,functions}))
 app.use("/api/chat", chatRoutes)
 app.use("/api/sessions", sessionRoutes)
+app.use("/api/execute", executeRoutes)
 
 // Health check
 app.get("/health", (req, res) => {
