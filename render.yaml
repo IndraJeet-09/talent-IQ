@@ -1,11 +1,5 @@
 services:
   - type: web
-    name: talent-iq-piston
-    runtime: docker
-    plan: free
-    dockerfilePath: piston/Dockerfile
-
-  - type: web
     name: talent-iq-backend
     runtime: node
     plan: free
@@ -31,5 +25,3 @@ services:
         sync: false
       - key: INNGEST_SIGNING_KEY
         sync: false
-      - key: PISTON_API_URL
-        value: https://talent-iq-piston.onrender.com

@@ -12,5 +12,4 @@ export const ENV = {
     STREAM_API_SECRET: process.env.STREAM_API_SECRET,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY,
-    PISTON_API_URL: process.env.PISTON_API_URL,
 }

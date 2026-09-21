@@ -1,16 +1,6 @@
-const PISTON_API = process.env.PISTON_API_URL || "http://localhost:2000";
+import vm from "node:vm";
 
-const LANGUAGE_VERSIONS = {
-  javascript: { language: "javascript", version: "18.15.0" },
-  python: { language: "python", version: "3.10.0" },
-  java: { language: "java", version: "15.0.2" },
-};
-
-const EXTENSIONS = {
-  javascript: "js",
-  python: "py",
-  java: "java",
-};
+const SUPPORTED_LANGUAGES = ["javascript"];
 
 export const executeCode = async (req, res) => {
   try {
@@ -20,42 +10,56 @@ export const executeCode = async (req, res) => {
       return res.status(400).json({ msg: "Language and code are required" });
     }
 
-    const languageConfig = LANGUAGE_VERSIONS[language];
-    if (!languageConfig) {
-      return res.status(400).json({ msg: `Unsupported language: ${language}` });
+    if (!SUPPORTED_LANGUAGES.includes(language)) {
+      return res.status(400).json({
+        success: false,
+        error: `Language "${language}" is not supported. Only JavaScript is currently available.`,
+      });
     }
 
-    const response = await fetch(`${PISTON_API}/api/v2/execute`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        language: languageConfig.language,
-        version: languageConfig.version,
-        files: [
-          {
-            name: `main.${EXTENSIONS[language] || "txt"}`,
-            content: code,
-          },
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).json({ msg: "Execution failed", error: errorText });
+    if (language === "javascript") {
+      return executeJavaScript(code, res);
     }
-
-    const data = await response.json();
-    const output = data.run?.stdout || "";
-    const stderr = data.run?.stderr || "";
-
-    if (stderr) {
-      return res.status(200).json({ success: false, output, error: stderr });
-    }
-
-    return res.status(200).json({ success: true, output: output || "No output" });
   } catch (error) {
     console.error("Execute code error:", error);
-    return res.status(500).json({ msg: "Code execution service unavailable", error: error.message });
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
+
+function executeJavaScript(code, res) {
+  let output = "";
+  let error = "";
+
+  const sandbox = {
+    console: {
+      log: (...args) => {
+        output += args.map(String).join(" ") + "\n";
+      },
+      error: (...args) => {
+        error += args.map(String).join(" ") + "\n";
+      },
+      warn: (...args) => {
+        output += args.map(String).join(" ") + "\n";
+      },
+    },
+    setTimeout,
+    clearTimeout,
+    setInterval,
+    clearInterval,
+  };
+
+  const context = vm.createContext(sandbox);
+
+  try {
+    const script = new vm.Script(code, { timeout: 5000 });
+    script.runInContext(context, { timeout: 5000 });
+  } catch (err) {
+    error += err.toString();
+  }
+
+  if (error) {
+    return res.status(200).json({ success: false, output: output.trim(), error: error.trim() });
+  }
+
+  return res.status(200).json({ success: true, output: output.trim() || "No output" });
+}
